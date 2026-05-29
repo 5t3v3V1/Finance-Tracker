@@ -1,14 +1,16 @@
 {
     "0": {
-        "name": "Uber",
-        "value": 20,
+        "id": 0,
+        "name": "Gym",
+        "value": 23.0,
         "date": "2026-05-29",
-        "type": "Expense"
+        "type": "Subscription"
     },
-    "1": {
-        "name": "Pizza",
-        "value": 25.5,
+    "3": {
+        "id": 3,
+        "name": "Sd",
+        "value": 1.0,
         "date": "2026-05-29",
-        "type": "Expense"
+        "type": "Income"
     }
 }

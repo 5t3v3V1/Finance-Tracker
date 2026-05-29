@@ -2,7 +2,8 @@ from datetime import date, timedelta, datetime
 import json
 
 class Transaction:
-    def __init__ (self, name, value, date, type):
+    def __init__ (self, id, name, value, date, type):
+        self.id = id
         self.name = name
         self.value = value
         self.date = date
@@ -10,6 +11,7 @@ class Transaction:
 
     def to_dict(self):
         transaction_json = {
+            "id": self.id,
             "name": self.name,
             "value": self.value,
             "date": self.date,
@@ -21,6 +23,7 @@ class Transaction:
 class System:
     def __init__ (self):
         self.transactions = []
+        self.next_id = 0
 
     def add_transaction(self):
         transaction_name = input("Transaction Name: ").strip().title()
@@ -31,7 +34,6 @@ class System:
 
             except ValueError:
                 print("Invalid Input")
-            
 
         transaction_date = str(date.today())
         print("'e': Expense, 's': Subscription, 'i': Income")
@@ -50,26 +52,40 @@ class System:
         elif transaction_type == "i":
             transaction_type = "Income"
 
-        new_transaction = Transaction(transaction_name, transaction_value, transaction_date, transaction_type)
+        new_transaction = Transaction(self.next_id, transaction_name, transaction_value, transaction_date, transaction_type)
         self.transactions.append(new_transaction)
+        self.next_id += 1
         return self.transactions
     
-    def delete_transaction(self, index):
-        self.transactions.pop(index)
+    def delete_transaction(self, id):
+        i = 0
+        for transaction in self.transactions:
+            if transaction.id == id:
+                self.transactions.pop(i)
+                
+            else:
+                i += 1
+                continue
+        
         return self.transactions
     
-    def rename_transaction(self, index, rename):
-        transaction = self.transactions[index]
+    def rename_transaction(self, id, rename):
+        i = 0
+        for transaction in self.transactions:
+            if transaction.id == id:
+                transaction = self.transactions[i]
+
+            else:
+                i += 1
+                continue
         transaction.name = rename
         return self.transactions
     
     def save_transactions(self):
         jsontransactions = {}
-        i = 0
 
-        for transactions in self.transactions:
-            jsontransactions[i] = transactions.to_dict()
-            i += 1
+        for transaction in self.transactions:
+            jsontransactions[transaction.id] = transaction.to_dict()
 
         with open("finances.json", "w", encoding="utf-8") as file:
             json.dump(jsontransactions, file, indent = 4)
@@ -82,7 +98,7 @@ class System:
                 loaded_transactions = json.load(file)
 
             for transaction_data in loaded_transactions.values():
-                loaded_transaction = Transaction(transaction_data["name"], transaction_data["value"], transaction_data["date"], transaction_data["type"])
+                loaded_transaction = Transaction(transaction_data["id"], transaction_data["name"], transaction_data["value"], transaction_data["date"], transaction_data["type"])
 
                 self.transactions.append(loaded_transaction)      
     
@@ -92,7 +108,7 @@ class System:
         return self.transactions
 
     def calculate(self, info):
-        if info == "gross_profit":
+        if info == "gross_income":
             income_sum = 0
             for transaction in self.transactions:
                 if transaction.type == "Income":
@@ -112,7 +128,7 @@ class System:
 
             return expense_sum
         
-        elif info == "net_profit":
+        elif info == "net_income":
             income_sum = 0
             for transaction in self.transactions:
                 if transaction.type == "Income":
@@ -135,9 +151,9 @@ class System:
     def filter(self, type):
         if type == "i":
             incomes = {}
-            for index, transaction in enumerate(self.transactions):
+            for transaction in self.transactions:
                 if transaction.type == "Income":
-                    incomes[index] = transaction
+                    incomes[transaction.id] = transaction
                 else:
                     continue
 
@@ -145,9 +161,9 @@ class System:
 
         elif type == "s":
             subscriptions = {}
-            for index, transaction in enumerate(self.transactions):
+            for transaction in self.transactions:
                 if transaction.type == "Subscription":
-                    subscriptions[index] = transaction
+                    subscriptions[transaction.id] = transaction
                 else:
                     continue
 
@@ -155,9 +171,9 @@ class System:
 
         elif type == "e":
             expenses = {}
-            for index, transaction in enumerate(self.transactions):
+            for transaction in self.transactions:
                 if transaction.type == "Expense":
-                    expenses[index] = transaction
+                    expenses[transaction.id] = transaction
                 else:
                     continue
 

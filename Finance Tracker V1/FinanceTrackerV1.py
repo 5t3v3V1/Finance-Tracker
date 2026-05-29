@@ -8,8 +8,8 @@ def view_transactions(system):
     print("-" * 40)
     print("\n")
 
-    for index, transaction in enumerate(system.transactions):
-        print(f"{index}. {transaction.name}, £{transaction.value}, {transaction.date}, {transaction.type}")
+    for transaction in system.transactions:
+        print(f"{transaction.id}. {transaction.name}, £{transaction.value}, {transaction.date}, {transaction.type}")
 
     print("\n")
     print("-" * 40)
@@ -20,8 +20,8 @@ def filter(type):
         print("-" * 40)
         print("\n")
 
-        for index, transaction in expenses.items():
-            print(f"{index}. {transaction.name}, £{transaction.value}, {transaction.date}, {transaction.type}")
+        for id, transaction in expenses.items():
+            print(f"{id}. {transaction.name}, £{transaction.value}, {transaction.date}, {transaction.type}")
         
         print("\n")
         print("-" * 40)
@@ -31,8 +31,8 @@ def filter(type):
         print("-" * 40)
         print("\n")
 
-        for index, transaction in subscriptions.items():
-            print(f"{index}. {transaction.name}, £{transaction.value}, {transaction.date}, {transaction.type}")
+        for id, transaction in subscriptions.items():
+            print(f"{id}. {transaction.name}, £{transaction.value}, {transaction.date}, {transaction.type}")
         
         print("\n")
         print("-" * 40)
@@ -42,8 +42,8 @@ def filter(type):
         print("-" * 40)
         print("\n")
 
-        for index, transaction in incomes.items():
-            print(f"{index}. {transaction.name}, £{transaction.value}, {transaction.date}, {transaction.type}")
+        for id, transaction in incomes.items():
+            print(f"{id}. {transaction.name}, £{transaction.value}, {transaction.date}, {transaction.type}")
     
         print("\n")
         print("-" * 40)
@@ -58,11 +58,11 @@ while True:
     print("6. Exit")
     
     gross_expense = str(tracker.calculate("gross_expense"))
-    gross_profit = str(tracker.calculate("gross_income"))
-    net_profit = str(tracker.calculate("net_profit"))
+    gross_income = str(tracker.calculate("gross_income"))
+    net_income = str(tracker.calculate("net_income"))
 
-    print(f"Net Profit: £{net_profit}")
-    print(f"Gross Profit: £{gross_profit}")
+    print(f"Net Income: £{net_income}")
+    print(f"Gross Income: £{gross_income}")
     print(f"Gross Expense: £{gross_expense}")
 
     choice = input("\nChoose Option: ")
@@ -79,9 +79,16 @@ while True:
         tracker.save_transactions()
 
     elif choice == "4":
-        index = int(input("Choose Transaction: "))
+        while True:
+            try:
+                id = int(input("Choose Transaction: "))
+                break
+
+            except ValueError:
+                print("Invalid Choice")
+
         new_name = input("New Name: ").strip().title()
-        tracker.rename_transaction(index, new_name)
+        tracker.rename_transaction(id, new_name)
 
     elif choice == "5":
         print("'e': Expense, 's': Subscription, 'i': Income")
