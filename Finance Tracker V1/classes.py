@@ -58,27 +58,23 @@ class System:
         return self.transactions
     
     def delete_transaction(self, id):
-        i = 0
-        for transaction in self.transactions:
+        for i, transaction in enumerate(self.transactions):
             if transaction.id == id:
                 self.transactions.pop(i)
                 
             else:
-                i += 1
                 continue
         
         return self.transactions
     
     def rename_transaction(self, id, rename):
-        i = 0
-        for transaction in self.transactions:
+        for i, transaction in enumerate(self.transactions):
             if transaction.id == id:
-                transaction = self.transactions[i]
+                transaction.name = rename
 
             else:
-                i += 1
                 continue
-        transaction.name = rename
+
         return self.transactions
     
     def save_transactions(self):
@@ -104,6 +100,9 @@ class System:
     
         except FileNotFoundError:
             pass
+
+        if self.transactions:
+            self.next_id = max(transaction.id for transaction in self.transactions) + 1
 
         return self.transactions
 
@@ -147,7 +146,6 @@ class System:
 
             return net_profit
 
-    
     def filter(self, type):
         if type == "i":
             incomes = {}
@@ -178,6 +176,49 @@ class System:
                     continue
 
             return expenses
+        
+    def filter_by_time(self, timeamount):
+        timefilter_transactions = []
+        timeframe = date.today() - timedelta(days = timeamount)
+
+        for transaction in self.transactions:
+            transaction_date = datetime.strptime(transaction.date, "%Y-%m-%d").date()
+            if transaction_date < timeframe:
+                break
+            else:
+                timefilter_transactions.append(transaction)
+        
+        return timefilter_transactions
+    
+    def summaries(self, timesummary):
+        timesummary_expenses = 0
+        timesummary_income = 0
+        timeframe = date.today() - timedelta(days = timesummary)
+
+        for transaction in self.transactions:
+            transaction_date = datetime.strptime(transaction.date, "%Y-%m-%d").date()
+            if transaction_date < timeframe:
+                break
+            elif transaction.type == "Expense" or transaction.type == "Subscription":
+                timesummary_expenses += transaction.value
+            elif transaction.type == "Income":
+                timesummary_income += transaction.value
+
+        timesummary_netincome = timesummary_income - timesummary_expenses
+        
+        return timesummary_expenses, timesummary_income, timesummary_netincome
+
+    def search(self, search):
+        searchfilter_transactions = []
+        for transaction in self.transactions:
+            if (search.upper() or search.lower()) not in transaction.name:
+                continue
+            else:
+                searchfilter_transactions.append(transaction)
+        
+        return searchfilter_transactions
+
+
 
 
 

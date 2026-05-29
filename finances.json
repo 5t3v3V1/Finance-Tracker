@@ -1,10 +1,10 @@
 {
     "0": {
         "id": 0,
-        "name": "Gym",
-        "value": 23.0,
+        "name": "Sadf",
+        "value": 34.0,
         "date": "2026-05-29",
-        "type": "Subscription"
+        "type": "Expense"
     },
     "3": {
         "id": 3,
@@ -12,5 +12,12 @@
         "value": 1.0,
         "date": "2026-05-29",
         "type": "Income"
+    },
+    "4": {
+        "id": 4,
+        "name": "Fr",
+        "value": 46.0,
+        "date": "2026-05-29",
+        "type": "Expense"
     }
 }
