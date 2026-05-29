@@ -5,10 +5,48 @@ tracker = System()
 tracker.load_transactions()
 
 def view_transactions(system):
+    print("-" * 40)
     print("\n")
 
     for index, transaction in enumerate(system.transactions):
         print(f"{index}. {transaction.name}, £{transaction.value}, {transaction.date}, {transaction.type}")
+
+    print("\n")
+    print("-" * 40)
+
+def filter(type):
+    if type == "e":
+        expenses = tracker.filter(type)
+        print("-" * 40)
+        print("\n")
+
+        for index, transaction in expenses.items():
+            print(f"{index}. {transaction.name}, £{transaction.value}, {transaction.date}, {transaction.type}")
+        
+        print("\n")
+        print("-" * 40)
+        
+    elif type == "s":
+        subscriptions = tracker.filter(type)
+        print("-" * 40)
+        print("\n")
+
+        for index, transaction in subscriptions.items():
+            print(f"{index}. {transaction.name}, £{transaction.value}, {transaction.date}, {transaction.type}")
+        
+        print("\n")
+        print("-" * 40)
+            
+    elif type == "i":
+        incomes = tracker.filter(type)
+        print("-" * 40)
+        print("\n")
+
+        for index, transaction in incomes.items():
+            print(f"{index}. {transaction.name}, £{transaction.value}, {transaction.date}, {transaction.type}")
+    
+        print("\n")
+        print("-" * 40)
 
 while True:
     
@@ -19,9 +57,9 @@ while True:
     print("5. Filter")
     print("6. Exit")
     
-    gross_expense = str(tracker.calculate_gross_expense())
-    gross_profit = str(tracker.calculate_gross_profit())
-    net_profit = str(tracker.calculate_net_profit())
+    gross_expense = str(tracker.calculate("gross_expense"))
+    gross_profit = str(tracker.calculate("gross_income"))
+    net_profit = str(tracker.calculate("net_profit"))
 
     print(f"Net Profit: £{net_profit}")
     print(f"Gross Profit: £{gross_profit}")
@@ -34,32 +72,21 @@ while True:
 
     elif choice == "2":
         tracker.add_transaction()
+        tracker.save_transactions()
 
     elif choice == "3":
-        tracker.delete_transaction(int(input("Choose Habit: ")))
+        tracker.delete_transaction(int(input("Choose Transaction: ")))
+        tracker.save_transactions()
 
     elif choice == "4":
-        index = int(input("Choose Habit: "))
+        index = int(input("Choose Transaction: "))
         new_name = input("New Name: ").strip().title()
         tracker.rename_transaction(index, new_name)
 
     elif choice == "5":
         print("'e': Expense, 's': Subscription, 'i': Income")
         type = input("Filter By Type: ")
-        if type == "e":
-            expenses = tracker.filter_by_expense()
-            for index, transaction in expenses.items():
-                print(f"{index}. {transaction.name}, £{transaction.value}, {transaction.date}, {transaction.type}")
-        
-        elif type == "s":
-            subscriptions = tracker.filter_by_subscription()
-            for index, transaction in subscriptions.items():
-                print(f"{index}. {transaction.name}, £{transaction.value}, {transaction.date}, {transaction.type}")
-            
-        elif type == "i":
-            incomes = tracker.filter_by_income()
-            for index, transaction in incomes.items():
-                print(f"{index}. {transaction.name}, £{transaction.value}, {transaction.date}, {transaction.type}")
+        filter(type)
 
     elif choice == "6":
         tracker.save_transactions()

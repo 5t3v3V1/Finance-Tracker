@@ -24,7 +24,15 @@ class System:
 
     def add_transaction(self):
         transaction_name = input("Transaction Name: ").strip().title()
-        transaction_value = int(input("Transaction Value: "))
+        while True:
+            try:
+                transaction_value = float(input("Transaction Value: "))
+                break
+
+            except ValueError:
+                print("Invalid Input")
+            
+
         transaction_date = str(date.today())
         print("'e': Expense, 's': Subscription, 'i': Income")
         while True:
@@ -83,74 +91,78 @@ class System:
 
         return self.transactions
 
-    def calculate_gross_profit(self):
-        income_sum = 0
-        for transaction in self.transactions:
-            if transaction.type == "Income":
-                income_sum += transaction.value
-            else:
-                continue
+    def calculate(self, info):
+        if info == "gross_profit":
+            income_sum = 0
+            for transaction in self.transactions:
+                if transaction.type == "Income":
+                    income_sum += transaction.value
+                else:
+                    continue
 
-        return income_sum
+            return income_sum
+        
+        elif info == "gross_expense":
+            expense_sum = 0
+            for transaction in self.transactions:
+                if transaction.type == "Expense" or transaction.type == "Subscription":
+                    expense_sum += transaction.value
+                else:
+                    continue
 
-    def calculate_gross_expense(self):
-        expense_sum = 0
-        for transaction in self.transactions:
-            if transaction.type == "Expense" or transaction.type == "Subscription":
-                expense_sum += transaction.value
-            else:
-                continue
+            return expense_sum
+        
+        elif info == "net_profit":
+            income_sum = 0
+            for transaction in self.transactions:
+                if transaction.type == "Income":
+                    income_sum += transaction.value
+                else:
+                    continue
 
-        return expense_sum
+            expense_sum = 0
+            for transaction in self.transactions:
+                if transaction.type == "Expense" or transaction.type == "Subscription":
+                    expense_sum += transaction.value
+                else:
+                    continue
 
-    def calculate_net_profit(self):
-        income_sum = 0
-        for transaction in self.transactions:
-            if transaction.type == "Income":
-                income_sum += transaction.value
-            else:
-                continue
+            net_profit = income_sum - expense_sum
 
-        expense_sum = 0
-        for transaction in self.transactions:
-            if transaction.type == "Expense" or transaction.type == "Subscription":
-                expense_sum += transaction.value
-            else:
-                continue
+            return net_profit
 
-        net_profit = income_sum - expense_sum
+    
+    def filter(self, type):
+        if type == "i":
+            incomes = {}
+            for index, transaction in enumerate(self.transactions):
+                if transaction.type == "Income":
+                    incomes[index] = transaction
+                else:
+                    continue
 
-        return net_profit
+            return incomes
 
-    def filter_by_income(self):
-        incomes = {}
-        for index, transaction in enumerate(self.transactions):
-            if transaction.type == "Income":
-                incomes[index] = transaction
-            else:
-                continue
+        elif type == "s":
+            subscriptions = {}
+            for index, transaction in enumerate(self.transactions):
+                if transaction.type == "Subscription":
+                    subscriptions[index] = transaction
+                else:
+                    continue
 
-        return incomes
+            return subscriptions
 
-    def filter_by_expense(self):
-        expenses = {}
-        for index, transaction in enumerate(self.transactions):
-            if transaction.type == "Expense":
-                expenses[index] = transaction
-            else:
-                continue
+        elif type == "e":
+            expenses = {}
+            for index, transaction in enumerate(self.transactions):
+                if transaction.type == "Expense":
+                    expenses[index] = transaction
+                else:
+                    continue
 
-        return expenses
+            return expenses
 
-    def filter_by_subscription(self):
-        subscriptions = {}
-        for index, transaction in enumerate(self.transactions):
-            if transaction.type == "Subscription":
-                subscriptions[index] = transaction
-            else:
-                continue
-
-        return subscriptions
 
 
 
